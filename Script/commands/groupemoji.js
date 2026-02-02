@@ -1,22 +1,18 @@
 module.exports.config = {
-	name: "emoji",
+	name: "groupemoji",
 	version: "1.0.0", 
 	hasPermssion: 0,
-	credits: "SHAHADAT SAHU",
+	credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
 	description: "Change your group Emoji",
 	commandCategory: "Box", 
-	usages: "groupemoji [emoji]", 
-	cooldowns: 0
+	usages: "groupemoji [name]", 
+	cooldowns: 0,
+	dependencies: [] 
 };
 
 module.exports.run = async function({ api, event, args }) {
-	const emoji = args.join(" ");
-	
-	if (!emoji) {
-		return api.sendMessage("You have not entered an Emoji 🐸", event.threadID, event.messageID);
-	}
-
-	api.changeThreadEmoji(emoji, event.threadID, () => {
-		api.sendMessage(`✅ Emoji successfully changed to: ${emoji}`, event.threadID, event.messageID);
-	});
-};
+	var emoji = args.join(" ")
+	if (!emoji) api.sendMessage("You have not entered Emoji 🐸", event.threadID, event.messageID)
+	else api.changeThreadEmoji(emoji, event.threadID, () => api.sendMessage(`🔨 The bot successfully changed Emoji to: ${emoji}`, event.threadID, event.messageID));
+});
+}

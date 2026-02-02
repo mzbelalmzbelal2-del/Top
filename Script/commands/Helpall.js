@@ -5,7 +5,7 @@ module.exports.config = {
  name: "helpall",
  version: "1.0.0",
  hasPermssion: 0,
- credits: "SHAHADAT SAHU",
+ credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐒𝐀𝐇𝐔",
  description: "Displays all available commands in one page",
  commandCategory: "system",
  usages: "[No args]",

@@ -1,84 +1,60 @@
 const axios = require("axios");
-const fs = require("fs");
+const fs = require('fs');
 const path = require("path");
-const vm = require("vm");
-
+const vm = require('vm');
 module.exports.config = {
-  name: "install",
-  version: "2.0.0",
-  hasPermssion: 2,
-  credits: "SHAHADAT SAHU",
-  description: "Create/Delete/Load modules",
-  commandCategory: "System",
-  usages: "[file.js code/link] / [del file.js]",
-  cooldowns: 0
+  'name': "install",
+  'version': "1.0.1",
+  'hasPermission': 0x2,
+  'credits': "dipto (optimized by ULLASH)",
+  'usePrefix': true,
+  'description': "Create a new JS file with code from a link or provided code, with syntax checking.",
+  'commandCategory': "utility",
+  'usages': "[file name] [link/code]",
+  'cooldowns': 0x5
 };
-
-const loadModule = (nameModule) => {
+module.exports.run = async ({
+  message: _0x249c7b,
+  args: _0x64072d,
+  api: _0xbee1d2,
+  event: _0x27c6a5
+}) => {
   try {
-    const p = __dirname + "/" + nameModule + ".js";
-    delete require.cache[require.resolve(p)];
-    const c = require(p);
-    if (!c.config || !c.run) throw new Error();
-    global.client.commands.delete(c.config.name);
-    global.client.eventRegistered = global.client.eventRegistered.filter(e => e != c.config.name);
-    global.client.commands.set(c.config.name, c);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-const unloadModule = (nameModule) => {
-  global.client.commands.delete(nameModule);
-  global.client.eventRegistered = global.client.eventRegistered.filter(e => e !== nameModule);
-};
-
-module.exports.run = async ({ api, event, args }) => {
-  const { threadID, messageID } = event;
-
-  if (!args[0]) return api.sendMessage("⚠️ Usage: install file.js code/link", threadID, messageID);
-
-  if (args[0] === "del") {
-    const file = args[1];
-    if (!file || !file.endsWith(".js")) return api.sendMessage("Invalid file.....", threadID, messageID);
-    const fp = path.join(__dirname, file);
-    if (!fs.existsSync(fp)) return api.sendMessage("File not found.....", threadID, messageID);
-    unloadModule(file.replace(".js", ""));
-    fs.unlinkSync(fp);
-    return api.sendMessage("🗑️ Deleted + Unloaded: " + file, threadID, messageID);
-  }
-
-  const fileName = args[0];
-  const content = args.slice(1).join(" ");
-  if (!fileName.endsWith(".js")) return api.sendMessage("Only .js allowed...⚠️", threadID, messageID);
-
-  const fp = path.join(__dirname, fileName);
-  if (fs.existsSync(fp)) return api.sendMessage("File already exists...⚠️", threadID, messageID);
-
-  let code;
-  if (/^(http|https):\/\//.test(content)) {
-    try {
-      const r = await axios.get(content);
-      code = r.data;
-    } catch {
-      return api.sendMessage("❌ Failed to download code!", threadID, messageID);
+    const _0x1e599e = _0x64072d[0];
+    const _0x3afd13 = _0x64072d.slice(1).join(" ");
+    if (!_0x1e599e || !_0x3afd13) {
+      return _0xbee1d2.sendMessage("⚠️ দয়া করে একটি বৈধ ফাইল নাম এবং কোড বা লিংক দিন!", _0x27c6a5.threadID, _0x27c6a5.messageID);
     }
-  } else {
-    code = content;
+    if (_0x1e599e.includes('..') || path.isAbsolute(_0x1e599e)) {
+      return _0xbee1d2.sendMessage("❌ অবৈধ ফাইল নাম!", _0x27c6a5.threadID, _0x27c6a5.messageID);
+    }
+    if (!_0x1e599e.endsWith(".js")) {
+      return _0xbee1d2.sendMessage("⚠️ শুধুমাত্র .js ফাইল অনুমোদিত!", _0x27c6a5.threadID, _0x27c6a5.messageID);
+    }
+    let _0x43d48a;
+    const _0x5ac656 = /^(http|https):\/\/[^ "]+$/;
+    if (_0x5ac656.test(_0x3afd13)) {
+      if (!_0x3afd13.startsWith("https://trustedsource.com/")) {
+        return _0xbee1d2.sendMessage("❌ অনুমোদিত উৎস ব্যতীত কোড ডাউনলোড করা যাবে না!", _0x27c6a5.threadID, _0x27c6a5.messageID);
+      }
+      const _0x243f63 = await axios.get(_0x3afd13);
+      _0x43d48a = _0x243f63.data;
+    } else {
+      _0x43d48a = _0x3afd13;
+    }
+    try {
+      new vm.Script(_0x43d48a);
+    } catch (_0x574673) {
+      return _0xbee1d2.sendMessage("❌ কোডে সিনট্যাক্স ত্রুটি: " + _0x574673.message, _0x27c6a5.threadID, _0x27c6a5.messageID);
+    }
+    const _0x15dfe3 = path.join(__dirname, _0x1e599e);
+    if (fs.existsSync(_0x15dfe3)) {
+      return _0xbee1d2.sendMessage("⚠️ এই নামে ইতিমধ্যে একটি ফাইল রয়েছে। অন্য নাম দিন!", _0x27c6a5.threadID, _0x27c6a5.messageID);
+    }
+    fs.writeFileSync(_0x15dfe3, _0x43d48a, "utf-8");
+    _0xbee1d2.sendMessage("✅ সফলভাবে ফাইল তৈরি হয়েছে: " + _0x15dfe3, _0x27c6a5.threadID, _0x27c6a5.messageID);
+  } catch (_0x4febb9) {
+    console.error("Error:", _0x4febb9);
+    _0xbee1d2.sendMessage("❌ ফাইল তৈরি করতে একটি সমস্যা হয়েছে!", _0x27c6a5.threadID, _0x27c6a5.messageID);
   }
-
-  try {
-    new vm.Script(code);
-  } catch (err) {
-    return api.sendMessage("❌ Syntax Error: " + err.message, threadID, messageID);
-  }
-
-  fs.writeFileSync(fp, code, "utf8");
-
-  const name = fileName.replace(".js", "");
-  const ok = loadModule(name);
-  if (!ok) return api.sendMessage("⚠️ File created but failed to load!", threadID, messageID);
-
-  return api.sendMessage("✅ Successfully Created + Loaded: " + fileName, threadID, messageID);
 };

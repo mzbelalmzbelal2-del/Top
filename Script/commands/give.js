@@ -4,7 +4,7 @@ const fs = require("fs"),
 
 module.exports.config = {
 	name: "give",
-	version: "1.0.0",
+	version: "1.0",
 	hasPermssion: 2,
 	credits: "Shaon Ahmed",
 	description: "Upload local command files to a pastebin service.",

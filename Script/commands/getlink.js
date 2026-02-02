@@ -1,35 +1,26 @@
 module.exports.config = {
-  name: "getlink",
-  version: "1.0.0",
-  hasPermssion: 0,
-  credits: "SHAHADAT SAHU",
-  description: "Get direct download link from replied media",
-  commandCategory: "Media",
-  usages: "reply to media",
-  cooldowns: 0,
-  usePrefix: true
+	name: "getlink",
+	version: "1.0.1",
+	hasPermssion: 0,
+	credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+	description: "Get the URL Download from Video, Audio is sent from the group",
+	commandCategory: "Tool",
+	usages: "getLink",
+	cooldowns: 5,
 };
 
 module.exports.languages = {
-  en: {
-    invalidFormat: "You must reply to a message containing an image, video, or audio....."
-  }
-};
+	"vi": {
+		"invaidFormat": "❌ Tin nhắn bạn phản hồi phải là một audio, video, ảnh nào đó"
+	},
+	"en": {
+		"invaidFormat": "❌ Your need reply a message have contain an audio, video or picture"
+	}
+}
 
 module.exports.run = async ({ api, event, getText }) => {
-  if (event.type !== "message_reply") {
-    return api.sendMessage(getText("invalidFormat"), event.threadID, event.messageID);
-  }
-
-  const attachments = event.messageReply.attachments;
-  if (!attachments || attachments.length !== 1) {
-    return api.sendMessage(getText("invalidFormat"), event.threadID, event.messageID);
-  }
-
-  const type = attachments[0].type;
-  if (!["photo", "video", "audio"].includes(type)) {
-    return api.sendMessage(getText("invalidFormat"), event.threadID, event.messageID);
-  }
-
-  return api.sendMessage(attachments[0].url, event.threadID, event.messageID);
-};
+	if (event.type !== "message_reply") return api.sendMessage(getText("invaidFormat"), event.threadID, event.messageID);
+	if (!event.messageReply.attachments || event.messageReply.attachments.length == 0) return api.sendMessage(getText("invaidFormat"), event.threadID, event.messageID);
+	if (event.messageReply.attachments.length > 1) return api.sendMessage(getText("invaidFormat"), event.threadID, event.messageID);
+	return api.sendMessage(event.messageReply.attachments[0].url, event.threadID, event.messageID);
+}
