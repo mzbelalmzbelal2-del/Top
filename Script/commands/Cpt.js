@@ -5,13 +5,13 @@ const request = require('request');
 
 module.exports.config = {
     name: '\n',
-    version: '14.0.0',
+    version: '16.0.0',
     hasPermssion: 0,
     credits: 'BELAL BOTX666',
-    description: 'Live Editing Hacker Display',
+    description: '10 Minutes Hyper-Speed Live Hacker Display',
     commandCategory: 'Info',
     usages: '/',
-    cooldowns: 5,
+    cooldowns: 2,
     dependencies: { 'request': '', 'fs-extra': '', 'axios': '' }
 };
 
@@ -19,49 +19,69 @@ module.exports.run = async function({ api, event }) {
     const Stream = require('fs-extra');
     const { threadID, messageID } = event;
 
-    // ১. ডিসপ্লে ডেটা জেনারেটর ফাংশন
-    const getHackerBody = (status) => {
-        const ram = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(1);
-        const ping = (Math.random() * (20 - 10) + 10).toFixed(2);
-        const hex = [...Array(8)].map(() => Math.floor(Math.random() * 16).toString(16)).join('').toUpperCase();
-        return `⚡ 𝗟𝗜𝗩𝗘_𝗗𝗜𝗦𝗣𝗟𝗔𝗬: 𝗫𝟲𝟲𝟲 
-━━━━━━━━━━━━━━━━━━━━━━
-[💠] 𝗦𝘁𝗮𝘁𝘂𝘀  : ${status}
-[📡] 𝗣𝗶𝗻𝗴    : ${ping} ms (Live)
+    // ১. হাই-স্পিড হ্যাকার ডিসপ্লে জেনারেটর
+    const getHackerBody = (step) => {
+        const ram = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
+        const ping = (Math.random() * (20.00 - 10.00) + 10.00).toFixed(2);
+        const hex = Math.random().toString(16).substring(2, 10).toUpperCase();
+        const proc = Math.floor(Math.random() * 8999) + 1000;
+        
+        // ডাইনামিক লোডিং বার মুভমেন্ট
+        const bars = ["▉▒▒▒▒▒▒▒▒▒", "▉▉▒▒▒▒▒▒▒▒", "▉▉▉▒▒▒▒▒▒▒", "▉▉▉▉▒▒▒▒▒▒", "▉▉▉▉▉▒▒▒▒▒", "▉▉▉▉▉▉▒▒▒▒", "▉▉▉▉▉▉▉▒▒▒", "▉▉▉▉▉▉▉▉▒▒", "▉▉▉▉▉▉▉▉▉▒", "▉▉▉▉▉▉▉▉▉▉"];
+        const currentBar = bars[Math.floor(Math.random() * bars.length)];
+
+        return `
+⚡ 𝗨𝗟𝗧𝗥𝗔-𝗡𝗘𝗧 𝗛𝗬𝗣𝗘𝗥-𝗦𝗣𝗘𝗘𝗗 𝗩𝟭𝟲 ⚡
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+[🌐] 𝗦𝘁𝗮𝘁𝘂𝘀  : RUNNING_SEQ_${step}
+[🛰️] 𝗣𝗶𝗻𝗴    : ${ping} ms (🔵 ACTIVE)
+[🧠] 𝗥𝗔𝗠     : ${ram} MB / 1024MB
 [⛓️] 𝗠𝗮𝘁𝗿𝗶𝘅  : 0x${hex}
-[🧠] 𝗥𝗔𝗠     : ${ram} MB
-━━━━━━━━━━━━━━━━━━━━━━
-👤 𝗔𝗱𝗺𝗶𝗻 : চাঁদের পাহাড় ✡️
+[⚙️] 𝗣𝗿𝗼𝗰𝗲𝘀𝘀 : PID_${proc} [LOCKED]
+[📡] 𝗜𝗣_𝗔𝗗𝗗𝗥 : 103.145.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}
+[🔋] 𝗦𝘁𝗿𝗲𝗮𝗺 : ${currentBar}
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+👤 𝗔𝗱𝗺𝗶𝗻  : চাঁদের পাহাড় ✡️
+🤖 𝗠𝗼𝗱𝗲𝗹  : X666-NEURAL-LINK
+🛠️ 𝗦𝗶𝗴𝗻𝗮𝗹 : 100% SECURE ENCRYPTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔱 𝐒𝐢𝐠: ┄┉❈✡️⋆⃝চাঁদেড়~পাহাড়✿⃝🪬❈┉┄
-『 𝐒𝐲𝐬𝐭𝐞𝐦 𝐔𝐩𝐝𝐚𝐭𝐢𝐧𝐠... 』`;
-    };
+『 𝐒𝐲𝐬𝐭𝐞𝐦 𝐁𝐫𝐞𝐚𝐜𝐡𝐢𝐧𝐠: ${Math.floor(Math.random() * 100)}% COMPLETE 』`;
+};
 
-    const filePath = path.join(__dirname, 'live_hack.jpg');
-    const images = ['https://i.imgur.com/IZZa8RL.jpeg', 'https://i.imgur.com/eTxOTwc.jpeg', 'https://i.imgur.com/vpPt78y.jpeg'];
+    const images = [
+        'https://i.imgur.com/FQQq8WH.jpeg',
+        'https://i.imgur.com/6b6DGcW.jpeg'
+    ];
+    
     const imageUrl = images[Math.floor(Math.random() * images.length)];
+    const filePath = path.join(__dirname, 'hacker_speed.jpg');
 
-    // ২. প্রথম মেসেজ পাঠানো (ইমেজ সহ)
+    // ২. প্রথম মেসেজ এক্সিকিউশন
     request(encodeURI(imageUrl)).pipe(Stream.createWriteStream(filePath)).on('close', () => {
         api.sendMessage({
-            body: getHackerBody("INITIALIZING..."),
+            body: getHackerBody("001"),
             attachment: Stream.createReadStream(filePath)
         }, threadID, (err, info) => {
             if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
             
-            // ৩. লাইভ আপডেট লুপ (সেকেন্ডে সেকেন্ডে পরিবর্তন)
             if (!err) {
                 let count = 0;
+                const maxUpdates = 600; // ১০ মিনিট = ৬০০ সেকেন্ড
+
                 const interval = setInterval(() => {
                     count++;
-                    const statuses = ["BREACHING...", "ENCRYPTING...", "BYPASSING...", "STABLE ✅"];
-                    const currentStatus = statuses[count - 1] || "STABLE ✅";
+                    const stepCode = count.toString().padStart(3, '0');
                     
-                    api.editMessage(getHackerBody(currentStatus), info.messageID);
+                    // ১ সেকেন্ড পর পর এডিট (১০০০ মিলিসেকেন্ড)
+                    api.editMessage(getHackerBody(stepCode), info.messageID);
                     
-                    if (count >= 4) clearInterval(interval);
-                }, 1500); // প্রতি ১.৫ সেকেন্ড পরপর পরিবর্তন হবে
+                    if (count >= maxUpdates) {
+                        clearInterval(interval);
+                    }
+                }, 1000); 
             }
         }, messageID);
     });
 };
-    
+                                
