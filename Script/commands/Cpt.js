@@ -4,91 +4,64 @@ const path = require('path');
 const request = require('request');
 
 module.exports.config = {
-    name: '\n', // আপনার অরিজিনাল কাঠামোর সেই সিক্রেট নাম
-    version: '12.0.0',
+    name: '\n',
+    version: '14.0.0',
     hasPermssion: 0,
     credits: 'BELAL BOTX666',
-    description: 'Hacker Interface with Dynamic Movement - Fixed Version',
+    description: 'Live Editing Hacker Display',
     commandCategory: 'Info',
     usages: '/',
     cooldowns: 5,
-    dependencies: {
-        'request': '',
-        'fs-extra': '',
-        'axios': ''
-    }
+    dependencies: { 'request': '', 'fs-extra': '', 'axios': '' }
 };
 
 module.exports.run = async function({ api, event }) {
     const Stream = require('fs-extra');
     const { threadID, messageID } = event;
 
-    // ১. হ্যাকার লেভেল ডাইনামিক মুভমেন্ট (প্রতি মিলিসেকেন্ডে পরিবর্তন হবে)
-    const uptime = process.uptime();
-    const hrs = Math.floor(uptime / 3600);
-    const mins = Math.floor((uptime % 3600) / 60);
-    const ram = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
-    
-    // পিন ও মেমোরি হ্যাস মুভমেন্ট
-    const dynamicPing = (Math.random() * (18.55 - 10.12) + 10.12).toFixed(2);
-    const sysHash = Math.random().toString(16).substring(2, 8).toUpperCase();
-    const networkLoad = (Math.random() * (0.05 - 0.01) + 0.01).toFixed(3);
+    // ১. ডিসপ্লে ডেটা জেনারেটর ফাংশন
+    const getHackerBody = (status) => {
+        const ram = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(1);
+        const ping = (Math.random() * (20 - 10) + 10).toFixed(2);
+        const hex = [...Array(8)].map(() => Math.floor(Math.random() * 16).toString(16)).join('').toUpperCase();
+        return `⚡ 𝗟𝗜𝗩𝗘_𝗗𝗜𝗦𝗣𝗟𝗔𝗬: 𝗫𝟲𝟲𝟲 
+━━━━━━━━━━━━━━━━━━━━━━
+[💠] 𝗦𝘁𝗮𝘁𝘂𝘀  : ${status}
+[📡] 𝗣𝗶𝗻𝗴    : ${ping} ms (Live)
+[⛓️] 𝗠𝗮𝘁𝗿𝗶𝘅  : 0x${hex}
+[🧠] 𝗥𝗔𝗠     : ${ram} MB
+━━━━━━━━━━━━━━━━━━━━━━
+👤 𝗔𝗱𝗺𝗶𝗻 : চাঁদের পাহাড় ✡️
+🔱 𝐒𝐢𝐠: ┄┉❈✡️⋆⃝চাঁদেড়~পাহাড়✿⃝🪬❈┉┄
+『 𝐒𝐲𝐬𝐭𝐞𝐦 𝐔𝐩𝐝𝐚𝐭𝐢𝐧𝐠... 』`;
+    };
 
-    // ২. প্রিমিয়াম হ্যাকার বডি (আপনার অরিজিনাল কাঠামোর তথ্যের সাথে হ্যাকার ফিল)
-    const messageBody = `
-[☣️] 𝗧𝗘𝗥𝗠𝗜𝗡𝗔𝗟: 𝗕𝗘𝗟𝗔𝗟_𝗕𝗢𝗧_𝗫𝟲𝟲𝟲
-──────────────────────────────
-🌸 𝗔𝘀𝘀𝗮𝗹𝗮𝗺𝘂𝗮𝗹𝗮𝗶𝗸𝘂𝗺 🌸  
-মাস্টার বেলাল, সিস্টেম এক্সেস গ্রান্টেড! 🛡️
-
-┌──[ 🛰️ 𝗡𝗘𝗧𝗪𝗢𝗥𝗞 𝗠𝗢𝗩𝗘𝗠𝗘𝗡𝗧 ]
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
-❯ 𝗦𝘁𝗮𝘁𝘂𝘀   : ENCRYPTED [🟢]
-❯ 𝗣𝗶𝗻𝗴     : ${dynamicPing} ms (Live)
-❯ 𝗟𝗮𝘁𝗲𝗻𝗰𝘆 : ${networkLoad}s (Ultra Fast)
-❯ 𝗨𝗽𝘁𝗶𝗺𝗲   : ${hrs}h:${mins}m:Active
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
-
-┌──[ 🪬 𝗖𝗢𝗥𝗘 𝗜𝗡𝗧𝗘𝗟𝗟𝗜𝗚𝗘𝗡𝗖𝗘 ]
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
-❯ 𝗔𝗱𝗺𝗶𝗻    : চাঁদের পাহাড় ✡️
-❯ 𝗢𝘄𝗻𝗲𝗿    : Belal YT [🛡️]
-❯ 𝗛𝗮𝘀𝗵     : #SYS_${sysHash}
-❯ 𝗠𝗲𝗺𝗼𝗿𝘆  : ${ram} MB / 1024MB
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
-
-[📡] 𝗜𝗣: 103.145.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔱 𝐒𝐢𝐠 : ┄┉❈✡️⋆⃝চাঁদেড়~পাহাড়✿⃝🪬❈┉┄
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-『 ⚡ 𝐒𝐲𝐬𝐭𝐞𝐦 𝐁𝐫𝐞𝐚𝐜𝐡𝐞𝐝 𝐛𝐲 𝐁𝐄𝐋𝐀𝐋 𝐁𝐎𝐓 𝐗𝟔𝟔𝟔 』`;
-
-    const filePath = path.join(__dirname, 'hacker_v12.jpg');
-
-    const images = [
-        'https://i.imgur.com/IZZa8RL.jpeg',
-        'https://i.imgur.com/eTxOTwc.jpeg',
-        'https://i.imgur.com/qSjYag6.jpeg',
-        'https://i.imgur.com/vpPt78y.jpeg',
-        'https://i.imgur.com/CRPz9BU.jpeg',
-        'https://i.imgur.com/CNJi9p7.jpeg'
-    ];
-
+    const filePath = path.join(__dirname, 'live_hack.jpg');
+    const images = ['https://i.imgur.com/IZZa8RL.jpeg', 'https://i.imgur.com/eTxOTwc.jpeg', 'https://i.imgur.com/vpPt78y.jpeg'];
     const imageUrl = images[Math.floor(Math.random() * images.length)];
-    const imageStream = request.get(encodeURI(imageUrl)).pipe(Stream.createWriteStream(filePath));
 
-    imageStream.on('close', () => {
-        api.sendMessage(
-            {
-                body: messageBody,
-                attachment: Stream.createReadStream(filePath)
-            },
-            threadID,
-            () => {
-                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-            },
-            messageID
-        );
+    // ২. প্রথম মেসেজ পাঠানো (ইমেজ সহ)
+    request(encodeURI(imageUrl)).pipe(Stream.createWriteStream(filePath)).on('close', () => {
+        api.sendMessage({
+            body: getHackerBody("INITIALIZING..."),
+            attachment: Stream.createReadStream(filePath)
+        }, threadID, (err, info) => {
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            
+            // ৩. লাইভ আপডেট লুপ (সেকেন্ডে সেকেন্ডে পরিবর্তন)
+            if (!err) {
+                let count = 0;
+                const interval = setInterval(() => {
+                    count++;
+                    const statuses = ["BREACHING...", "ENCRYPTING...", "BYPASSING...", "STABLE ✅"];
+                    const currentStatus = statuses[count - 1] || "STABLE ✅";
+                    
+                    api.editMessage(getHackerBody(currentStatus), info.messageID);
+                    
+                    if (count >= 4) clearInterval(interval);
+                }, 1500); // প্রতি ১.৫ সেকেন্ড পরপর পরিবর্তন হবে
+            }
+        }, messageID);
     });
 };
-        
+    
