@@ -3,7 +3,7 @@ const request = require("request");
 const path = require("path");
 
 module.exports.config = {
-  name: "ahpp",
+  name: "vx",
   version: "3.0.0",
   hasPermssion: 0,
   credits: "BELAL BOTX666",
