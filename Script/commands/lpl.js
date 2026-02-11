@@ -3,11 +3,11 @@ const request = require("request");
 const path = require("path");
 
 module.exports.config = {
-  name: "lpl",
-  version: "2.0.0",
+  name: "ahpp",
+  version: "3.0.0",
   hasPermssion: 0,
   credits: "BELAL BOTX666",
-  description: "সিরিয়াল অনুযায়ী ১টি করে ইমেজ শো করবে (একটিও মিস হবে না)",
+  description: "সিরিয়াল স্ট্রিক্টলি মেইনটেইন হবে (বট অফ হলেও)",
   commandCategory: "Random-IMG",
   usages: "ahpp",
   cooldowns: 2,
@@ -20,7 +20,6 @@ module.exports.config = {
 module.exports.run = async ({ api, event }) => {
   const { threadID, messageID } = event;
 
-  // আপনার দেওয়া সব লিংকের লিস্ট (সিরিয়াল মেইনটেইন হবে)
   const imgLinks = [
     "https://i.imgur.com/r5OFIo4.jpeg", "https://i.imgur.com/LSbd2JU.jpeg", "https://i.imgur.com/7UrlKUo.jpeg",
     "https://i.imgur.com/Sn1XNeR.jpeg", "https://i.imgur.com/X1Z6MkZ.jpeg", "https://i.imgur.com/XFl7bfr.jpeg",
@@ -74,30 +73,33 @@ module.exports.run = async ({ api, event }) => {
     "https://i.imgur.com/XotExLy.jpeg", "https://i.imgur.com/vgUc6Ql.jpeg"
   ];
 
-  // ১. সিরিয়াল মনে রাখার জন্য ডাটাবেজ ফাইল পাথ
-  const storagePath = path.join(__dirname, "cache", "ahpp_serial.json");
+  // ডাটাবেজ ফাইলের পাথ
+  const storagePath = path.join(__dirname, "cache", "ahpp_permanent.txt");
 
-  // ২. ফাইল না থাকলে নতুন ফাইল তৈরি (০ থেকে শুরু)
+  // ফাইল না থাকলে ০ দিয়ে শুরু করো
   if (!fs.existsSync(storagePath)) {
-    fs.writeJsonSync(storagePath, { nextIndex: 0 });
+    fs.writeFileSync(storagePath, "0");
   }
 
-  // ৩. বর্তমান ডাটা রিড করা
-  let storage = fs.readJsonSync(storagePath);
-  let currentIndex = storage.nextIndex;
+  // সরাসরি ফাইল থেকে রিড করা (যাতে মেমোরিতে কোনো গণ্ডগোল না হয়)
+  let currentIndex = parseInt(fs.readFileSync(storagePath, "utf-8"));
 
-  // ৪. সিরিয়াল অনুযায়ী বর্তমান ইমেজ লিংক নেওয়া
+  // যদি কোনো কারণে ইনডেক্স সংখ্যা না হয়
+  if (isNaN(currentIndex)) currentIndex = 0;
+
   const selectedImage = imgLinks[currentIndex];
 
-  // ৫. পরের বারের জন্য ইনডেক্স ১ বাড়ানো (সব শেষ হলে আবার ০ তে ফিরবে)
-  storage.nextIndex = (currentIndex + 1) % imgLinks.length;
-  fs.writeJsonSync(storagePath, storage);
+  // পরের ইনডেক্স নির্ধারণ
+  let nextIndex = (currentIndex + 1) % imgLinks.length;
 
-  const filePath = path.join(__dirname, "cache", `ahpp_${Date.now()}.jpg`);
+  // সরাসরি ফাইলে লিখে ফেলা
+  fs.writeFileSync(storagePath, nextIndex.toString());
+
+  const filePath = path.join(__dirname, "cache", `ahpp_strict.jpg`);
 
   const callback = () => {
     api.sendMessage({
-      body: `--- Anime Hot PP ---\n\nStatus: Serial Playing 🥵🤭\n\n[ Image No: ${currentIndex + 1}/${imgLinks.length} ]`,
+      body: `Anime Hot PP 🥵🤭\n\n[ Image No: ${currentIndex + 1}/${imgLinks.length} ]`,
       attachment: fs.createReadStream(filePath)
     }, threadID, () => {
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
@@ -108,3 +110,4 @@ module.exports.run = async ({ api, event }) => {
     .pipe(fs.createWriteStream(filePath))
     .on("close", callback);
 };
+  
